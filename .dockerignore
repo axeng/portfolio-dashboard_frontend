@@ -232,3 +232,5 @@ env.sample
 
 **/.env.local
 **/.env.*.local
+
+**/.idea/
