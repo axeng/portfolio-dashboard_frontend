@@ -27,7 +27,7 @@ To do so you first need to copy the default configuration file:
 cp env.sample .env.local
 ```
 
-Then you can edit the `env.local` file with your configuration.
+Then you can edit the `.env.local` file with your configuration.
 
 
 #### 1.2.2 Run the application
