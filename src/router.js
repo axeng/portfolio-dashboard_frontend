@@ -38,8 +38,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        //const authenticated = await store.dispatch("auth/initKeycloak");
-        const authenticated = true;
+        const authenticated = await store.dispatch("auth/initKeycloak");
         if (authenticated) {
             next();
         } else {

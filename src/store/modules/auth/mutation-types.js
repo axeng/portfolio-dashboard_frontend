@@ -1,0 +1,2 @@
+export const SET_AUTHENTICATION = "SET_AUTHENTICATION";
+export const SET_USER_INFO = "SET_USER_INFO";
