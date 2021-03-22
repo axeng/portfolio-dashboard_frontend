@@ -38,11 +38,17 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        const authenticated = await store.dispatch("auth/initKeycloak");
-        if (authenticated) {
-            next();
+        const authentication = store.getters["auth/getAuthentication"];
+
+        if (authentication === undefined) {
+            const authenticated = await store.dispatch("auth/initKeycloak");
+            if (authenticated) {
+                next();
+            } else {
+                next("/unauthorized");
+            }
         } else {
-            next("/unauthorized");
+            next();
         }
     } else {
         next();
