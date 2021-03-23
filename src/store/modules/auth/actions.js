@@ -11,6 +11,10 @@ export default {
 };
 
 async function initKeycloak({ commit, state }) {
+    if (state["authentication"] !== undefined) {
+        return true;
+    }
+
     let keycloakAuth = new Keycloak({
         url: process.env.VUE_APP_KEYCLOAK_ADDRESS,
         realm: process.env.VUE_APP_KEYCLOAK_REALM,
@@ -33,6 +37,7 @@ async function initKeycloak({ commit, state }) {
                 }
             }).catch((error) => {
                 if (process.env.VUE_APP_PRINT_ERROR === "true") {
+                    console.error("Token not refreshed, valid for " + Math.round(keycloakAuth.tokenParsed.exp + keycloakAuth.timeSkew - new Date().getTime() / 1000) + " seconds");
                     console.error(error);
                 }
             });
@@ -56,21 +61,21 @@ async function loadUserInfo({ commit, state: { authentication } }) {
         if (process.env.VUE_APP_PRINT_ERROR === "true") {
             console.error(error);
         }
-
-        return false;
     }
 }
 
 function logout({ commit, state }) {
-    state["authentication"].logout().then(() => {
-        resetAuthentication({ commit });
-        initKeycloak({ commit, state });
-    });
+    if (state["authentication"] !== undefined) {
+        state["authentication"].logout().then(() => {
+            resetAuthentication({ commit });
+            initKeycloak({ commit, state });
+        });
+    }
 }
 
 function setAuthentication({ commit, state }, { authentication }) {
     commit(SET_AUTHENTICATION, { authentication });
-    axios.defaults.headers.common["Authorization"] = "Bearer " + authentication.token;
+    axios.defaults.headers.common["Authorization"] = "Bearer " + authentication["token"];
     loadUserInfo({ commit, state });
 }
 
