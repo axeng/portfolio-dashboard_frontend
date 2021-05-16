@@ -1,11 +1,11 @@
 export default {
-    getAuthentication,
+    getKeycloakAuthentication,
     getUserInfo
 };
 
-// Returns the authentication
-function getAuthentication({ authentication }) {
-    return authentication;
+// Returns the Keycloak authentication
+function getKeycloakAuthentication({ keycloakAuthentication }) {
+    return keycloakAuthentication;
 }
 
 // Returns the user info

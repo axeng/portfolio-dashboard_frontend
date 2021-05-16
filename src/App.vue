@@ -3,6 +3,12 @@
         <router-link to="/">Home</router-link>
         |
         <router-link to="/unauthorized">Unauthorized</router-link>
+        |
+        <router-link to="/platforms">Platforms</router-link>
+        |
+        <router-link to="/accounts">Accounts</router-link>
+        |
+        <router-link to="/external-apis">ExternalAPIs</router-link>
     </div>
     <router-view />
 </template>

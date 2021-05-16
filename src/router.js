@@ -1,3 +1,6 @@
+import Accounts from "@/views/Accounts.vue";
+import ExternalAPIs from "@/views/ExternalAPIs.vue";
+import Platforms from "@/views/Platforms.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import store from "@/store";
@@ -10,6 +13,30 @@ const routes = [
         path: "/",
         name: "Home",
         component: Home,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: "/platforms",
+        name: "Platforms",
+        component: Platforms,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: "/external-apis",
+        name: "ExternalAPIs",
+        component: ExternalAPIs,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: "/accounts",
+        name: "Accounts",
+        component: Accounts,
         meta: {
             requiresAuth: true
         }
