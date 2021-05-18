@@ -1,15 +1,15 @@
 <template>
     <div>
-        <h3>
+        <h2>
             Accounts
-        </h3>
+        </h2>
         <ListContent :content="accounts" />
     </div>
 
     <div>
-        <h3>
+        <h2>
             Create:
-        </h3>
+        </h2>
 
         Display Name:
         <input
@@ -33,7 +33,11 @@
         </select>
 
         <br />
-        Additional Data:
+        <json-forms
+            :data="additionalData"
+            :schema="platformAdditionalDataSchema"
+            :renderers="renderers"
+            @change="additionalDataOnChange" />
 
         <br />
         Platform:
@@ -56,9 +60,9 @@
     </div>
 
     <div>
-        <h3>
+        <h2>
             Delete:
-        </h3>
+        </h2>
 
         Account:
         <select v-model="deleteAccountId">
@@ -79,18 +83,25 @@
     import ListContent from "@/components/ListContent.vue";
     import { callAPI } from "@/utils.js";
 
+    import { JsonForms } from "@jsonforms/vue";
+    import { vanillaRenderers } from "@jsonforms/vue-vanilla";
+
     export default {
         name: "Accounts",
         components: {
-            ListContent
+            ListContent,
+            JsonForms
         },
         data: function() {
             return {
+                renderers: Object.freeze([
+                    ...vanillaRenderers
+                ]),
                 accounts: [],
-                platforms: {},
+                platforms: [],
                 parentAccountId: -1,
                 displayName: undefined,
-                additionalData: undefined,
+                additionalData: {},
                 platformId: -1,
                 deleteAccountId: undefined,
                 platformAdditionalDataSchemas: {}
@@ -108,10 +119,7 @@
                 this.platforms = await callAPI({
                     uriPath: "/platforms/",
                     method: "get",
-                    parameters: {
-                        as_dict: true
-                    },
-                    defaultIfError: {}
+                    defaultIfError: []
                 });
             },
             loadPlatformAdditionalDataSchemas: async function() {
@@ -122,22 +130,15 @@
                 });
             },
             createAccount: async function() {
-                // TODO remove
-                if (this.platformId !== -1)
-                    this.additionalData = "fakeAdditionalData"
-                else
-                    this.additionalData = undefined
-
                 // TODO data validation
 
                 let newAccountData = {
-                    display_name: this.displayName
+                    display_name: this.displayName,
+                    additional_data: JSON.stringify(this.additionalData)
                 };
 
                 if (this.parentAccountId !== -1)
                     newAccountData["parent_account_id"] = this.parentAccountId;
-                if (this.additionalData !== undefined)
-                    newAccountData["additional_data"] = this.additionalData;
                 if (this.platformId !== -1)
                     newAccountData["platform_id"] = this.platformId;
 
@@ -160,12 +161,23 @@
 
                     await this.loadAccounts();
                 }
+            },
+            additionalDataOnChange: function(event) {
+                this.additionalData = event.data;
             }
         },
         mounted() {
             this.loadAccounts();
             this.loadPlatforms();
             this.loadPlatformAdditionalDataSchemas();
+        },
+        computed: {
+            platformAdditionalDataSchema: function() {
+                if (this.platformId === -1)
+                    return undefined;
+
+                return this.platformAdditionalDataSchemas[this.platformId];
+            }
         }
     };
 </script>

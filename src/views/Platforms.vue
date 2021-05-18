@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h3>
+        <h2>
             Platforms
-        </h3>
+        </h2>
         <ListContent :content="platforms" />
     </div>
 </template>

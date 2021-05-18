@@ -1,15 +1,15 @@
 <template>
     <div>
-        <h3>
+        <h2>
             External APIs
-        </h3>
+        </h2>
         <ListContent :content="externalAPIs" />
     </div>
 
     <div>
-        <h3>
+        <h2>
             Create:
-        </h3>
+        </h2>
 
         Display Name:
         <input
@@ -17,7 +17,11 @@
             placeholder="name" />
 
         <br />
-        Authentication Data:
+        <json-forms
+            :data="authenticationData"
+            :schema="platformAuthenticationDataSchema"
+            :renderers="renderers"
+            @change="authenticationDataOnChange" />
 
         <br />
         Account:
@@ -35,9 +39,9 @@
     </div>
 
     <div>
-        <h3>
+        <h2>
             Delete:
-        </h3>
+        </h2>
 
         External API:
         <select v-model="deleteExternalAPIId">
@@ -58,17 +62,24 @@
     import ListContent from "@/components/ListContent.vue";
     import { callAPI } from "@/utils.js";
 
+    import { JsonForms } from "@jsonforms/vue";
+    import { vanillaRenderers } from "@jsonforms/vue-vanilla";
+
     export default {
         name: "ExternalAPIs",
         components: {
-            ListContent
+            ListContent,
+            JsonForms
         },
         data: function() {
             return {
+                renderers: Object.freeze([
+                    ...vanillaRenderers
+                ]),
                 externalAPIs: [],
                 accounts: {},
                 displayName: undefined,
-                authenticationData: undefined,
+                authenticationData: {},
                 accountId: undefined,
                 deleteExternalAPIId: undefined,
                 platformAuthenticationDataSchemas: {}
@@ -101,18 +112,13 @@
                 });
             },
             createExternalAPI: async function() {
-                // TODO remove
-                this.authenticationData = "fakeAuthenticationData";
-
                 // TODO data validation
 
                 let newExternalAPI = {
                     display_name: this.displayName,
-                    account_id: this.accountId
+                    account_id: this.accountId,
+                    authentication_data: JSON.stringify(this.authenticationData)
                 };
-
-                if (this.authenticationData !== undefined)
-                    newExternalAPI["authentication_data"] = this.authenticationData;
 
                 await callAPI({
                     uriPath: "/external-apis/",
@@ -133,12 +139,24 @@
 
                     await this.loadExternalAPIs();
                 }
+            },
+            authenticationDataOnChange: function(event) {
+                this.authenticationData = event.data;
             }
         },
         mounted() {
             this.loadExternalAPIs();
             this.loadAccounts();
             this.loadPlatformAuthenticationDataSchemas();
+        },
+        computed: {
+            platformAuthenticationDataSchema: function() {
+                if (!(this.accountId in this.accounts))
+                    return undefined;
+
+                const platformId = this.accounts[this.accountId]["platform_id"];
+                return this.platformAuthenticationDataSchemas[platformId];
+            }
         }
     };
 </script>
