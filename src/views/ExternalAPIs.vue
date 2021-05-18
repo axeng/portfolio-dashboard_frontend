@@ -90,6 +90,9 @@
                 this.externalAPIs = await callAPI({
                     uriPath: "/external-apis/",
                     method: "get",
+                    parameters: {
+                        limit: -1
+                    },
                     defaultIfError: []
                 });
             },
@@ -100,7 +103,8 @@
                     defaultIfError: {},
                     parameters: {
                         filter_platforms: true,
-                        as_dict: true
+                        as_dict: true,
+                        limit: -1
                     }
                 });
             },

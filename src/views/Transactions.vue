@@ -3,7 +3,7 @@
         <h2>
             Platforms
         </h2>
-        <ListContent :content="platforms" />
+        <ListContent :content="transactions" />
     </div>
 </template>
 
@@ -12,29 +12,26 @@
     import { callAPI } from "@/utils.js";
 
     export default {
-        name: "Platforms",
+        name: "Transactions",
         components: {
             ListContent
         },
         data: function() {
             return {
-                platforms: []
+                transactions: []
             };
         },
         methods: {
-            loadPlatforms: async function() {
-                this.platforms = await callAPI({
-                    uriPath: "/platforms/",
+            loadTransactions: async function() {
+                this.transactions = await callAPI({
+                    uriPath: "/transactions/",
                     method: "get",
-                    parameters: {
-                        limit: -1
-                    },
                     defaultIfError: []
                 });
             }
         },
         mounted() {
-            this.loadPlatforms();
+            this.loadTransactions();
         }
     };
 </script>

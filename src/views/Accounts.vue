@@ -112,6 +112,9 @@
                 this.accounts = await callAPI({
                     uriPath: "/accounts/",
                     method: "get",
+                    parameters: {
+                        limit: -1
+                    },
                     defaultIfError: []
                 });
             },
@@ -119,6 +122,9 @@
                 this.platforms = await callAPI({
                     uriPath: "/platforms/",
                     method: "get",
+                    parameters: {
+                        limit: -1
+                    },
                     defaultIfError: []
                 });
             },

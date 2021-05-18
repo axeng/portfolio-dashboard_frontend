@@ -1,6 +1,7 @@
 import Accounts from "@/views/Accounts.vue";
 import ExternalAPIs from "@/views/ExternalAPIs.vue";
 import Platforms from "@/views/Platforms.vue";
+import Transactions from "@/views/Transactions.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import store from "@/store";
@@ -37,6 +38,14 @@ const routes = [
         path: "/accounts",
         name: "Accounts",
         component: Accounts,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: "/transactions",
+        name: "Transactions",
+        component: Transactions,
         meta: {
             requiresAuth: true
         }
