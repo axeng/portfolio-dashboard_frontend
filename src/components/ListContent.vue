@@ -1,15 +1,10 @@
 <template>
-    <div v-if="content === undefined">
-        undefined
-    </div>
-    <div
-        v-if="content !== undefined && content.length > 0"
-        id="div">
+    <div id="div">
         <table id="table">
             <thead>
                 <tr>
                     <th
-                        v-for="(value, name) in content[0]"
+                        v-for="(value, name) in firstElement"
                         :key="name">
                         {{ name }}
                     </th>
@@ -31,27 +26,17 @@
 </template>
 
 <script>
-    import { callAPI } from "@/utils.js";
-
     export default {
         name: "ListContent",
         props: {
-            uriPath: String
+            content: [Array, Object]
         },
-        data: function() {
-            return {
-                content: undefined
-            };
-        },
-        async mounted() {
-            try {
-                this.content = await callAPI(
-                    this.uriPath,
-                    "get",
-                    true
-                );
-            } catch (error) {
-                console.error(error);
+        computed: {
+            firstElement: function() {
+                if (this.content instanceof Array)
+                    return this.content[0];
+
+                return this.content[Object.keys(this.content)[0]];
             }
         }
     };
