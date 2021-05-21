@@ -56,6 +56,25 @@
         <br />
         <button v-on:click="deleteExternalAPI">Delete</button>
     </div>
+
+    <div>
+        <h2>
+            Fetch Transactions
+        </h2>
+
+        External API:
+        <select v-model="fetchExternalAPIId">
+            <option
+                v-for="externalAPI in externalAPIs"
+                :value="externalAPI.id"
+                :key="externalAPI.id">
+                {{ externalAPI.id }} - {{ externalAPI.display_name }}
+            </option>
+        </select>
+
+        <br />
+        <button v-on:click="fetchTransactions">Fetch Transactions</button>
+    </div>
 </template>
 
 <script>
@@ -82,7 +101,8 @@
                 authenticationData: {},
                 accountId: undefined,
                 deleteExternalAPIId: undefined,
-                platformAuthenticationDataSchemas: {}
+                platformAuthenticationDataSchemas: {},
+                fetchExternalAPIId: undefined
             };
         },
         methods: {
@@ -143,6 +163,14 @@
 
                     await this.loadExternalAPIs();
                 }
+            },
+            fetchTransactions: async function() {
+                const result = await callAPI({
+                    uriPath: "/external-apis/" + this.fetchExternalAPIId + "/fetch-data/transactions/",
+                    method: "post"
+                });
+
+                console.log(result);
             },
             authenticationDataOnChange: function(event) {
                 this.authenticationData = event.data;
